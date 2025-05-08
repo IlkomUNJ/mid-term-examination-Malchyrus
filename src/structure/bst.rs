@@ -462,7 +462,4 @@ impl BstNode {
     inorder_take(&Some(BstNode::get_root(node)), &mut collected);
     build_balance(&collected, None).unwrap()
     }
-
-    }
-
-
+}
