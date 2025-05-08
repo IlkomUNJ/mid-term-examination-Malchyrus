@@ -381,7 +381,7 @@ impl BstNode {
         if let Some(found) = self.find_node(target_node){
             let mut node_ref = found.borrow_mut();
 
-        }
+        
         if value < node_ref.key.unwrap() {
             if node_ref.left.is_none(){
                 node_ref.add_left_child(&found,value);
@@ -394,10 +394,11 @@ impl BstNode {
                 }
             }
         }
+    }
         false
     }
 
-    fn tree_predecessor(node &BstNodeLink) -> Option<BstNodeLink>{
+    fn tree_predecessor(node: &BstNodeLink) -> Option<BstNodeLink>{
         let left = &node.borrow().left;
         if let Some(left_node) = left{
             return Some(left_node.borrow().maximum());
@@ -452,11 +453,11 @@ impl BstNode {
             if let Some(p) = parent {
                 root.borrow_mut().parent = Some(BstNode::downgrade(p));
             }
-        }
+        
         root.borrow_mut().left=build_balance(&nodes[..mid],Some(&root));
         root.borrow_mut().right=build_balance(&nodes[mid+1..],Some(&root));
         Some(root)    
-    
+    }
     let mut collected = Vec::new();
     inorder_take(&Some(BstNode::get_root(node)), &mut collected);
     build_balance(&collected, None).unwrap()
@@ -464,6 +465,4 @@ impl BstNode {
 
     }
 
-    fn lookup(node: BTreeNodeLink, keys: Vec<i32>) -> bool{
-        
-    }
+
