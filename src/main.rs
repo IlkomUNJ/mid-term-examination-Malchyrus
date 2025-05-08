@@ -14,6 +14,14 @@ fn main() {
     test_binary_search_tree();
 }
 
+fn taska(){
+    
+}
+
+fn taskb(){
+
+}
+
 fn test_binary_search_tree(){
     let rootlink: BstNodeLink = BstNode::new_bst_nodelink(15);
     rootlink.borrow_mut().add_left_child(&rootlink, 6);

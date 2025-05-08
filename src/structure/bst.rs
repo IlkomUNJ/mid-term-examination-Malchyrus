@@ -352,4 +352,118 @@ impl BstNode {
             Some(x) => Some(x.upgrade().unwrap()),
         }
     }
-}
+
+    pub fn find_node(&self, target_node:&BstNodeLink)-> Option<BstNodeLink> { 
+        fn depth_search(current: &BstNodeLink, target:&BstNodeLink) -> Option<BstNodeLink> {
+            if BstNode::is_node_match(current, target){
+                return(current.clone());
+            }
+            if let Some(left) = &current.borrow().left {
+                if let Some(found) = depth_search(left,target) {
+                    return Some(found);
+                }
+            }
+            if let Some(right) = &current.borrow().right {
+                if let Some(found) = depth_search(right,target) {
+                    return Some(found);
+                }
+            }
+            None
+        }
+        if self.key.is_none(){
+            return None;
+        }
+
+        depth_search(&BstNode::get_root(&target_node),target_node)
+    }
+
+    fn add_node(&self, target_node: &BstNodeLink, value: i32) -> bool {
+        if let Some(found) = self.find_node(target_node){
+            let mut node_ref = found.borrow_mut();
+
+        }
+        if value < node_ref.key.unwrap() {
+            if node_ref.left.is_none(){
+                node_ref.add_left_child(&found,value);
+                return true;
+            }
+            else if value > node_ref.key.unwrap(){
+                if node_ref.right.is_none(){
+                    node_ref.add_right_child(&found,value);
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    fn tree_predecessor(node &BstNodeLink) -> Option<BstNodeLink>{
+        let left = &node.borrow().left;
+        if let Some(left_node) = left{
+            return Some(left_node.borrow().maximum());
+        }
+        let mut current = node.clone();
+        let mut parent = BstNode::upgrade_weak_to_strong(current.borrow().parent.clone());
+        while let Some(parentt) = parent {
+            if let Some(right) = &parentt.borrow().right {
+                if BstNode::is_node_match(&current,right) {
+                    return Some(parentt);
+                }
+            }
+            current = parentt.clone();
+            parent = BstNode::upgrade_weak_to_strong(current.borrow().parent.clone());
+
+        }
+        None
+    }
+
+    pub fn inorder(node:&Option<BstNodeLink>, vec: &mut Vec<BstNodeLink>) {
+        if let Some(n) = node {
+            BstNode::inorder(&n.borrow().left, vec);
+         vec.push(n.clone());
+         BstNode::inorder(&n.borrow().right, vec);
+        }
+    }
+
+    fn median(&self) -> BstNodeLink{
+        let mut nodes = Vec::new;
+        let root = BstNode::get_root(&self.get_bst_nodelink_copy());
+        inorder(&Some(root), &mut nodes);
+        let mid = nodes.len()/2;
+        nodes[mid].clone()
+
+    }
+
+    fn tree_rebalance(node: &BstNodeLink) -> BstNodeLink{
+        fn inorder_take(node:&Option<BstNodeLink>, vec: &mut Vec<BstNodeLink>){
+            if let Some(n) = node{
+                inorder_take(&n.borrow().left, vec);
+                vec.push(n.clone());
+                inorder_take(&n.borrow().right, vec);
+            }
+        }
+        fn build_balance (nodes:&[BstNodeLink], parent:Option<&BstNodeLink>) -> Option<BstNodeLink> {
+            if nodes.is_empty(){
+                return None;
+            }
+            let mid = nodes.len()/2;
+            let root = BstNode::new_bst_nodelink(nodes[mid].borrow().key.unwrap());
+
+            if let Some(p) = parent {
+                root.borrow_mut().parent = Some(BstNode::downgrade(p));
+            }
+        }
+        root.borrow_mut().left=build_balance(&nodes[..mid],Some(&root));
+        root.borrow_mut().right=build_balance(&nodes[mid+1..],Some(&root));
+        Some(root)    
+    
+    let mut collected = Vec::new();
+    inorder_take(&Some(BstNode::get_root(node)), &mut collected);
+    build_balance(&collected, None).unwrap()
+    }
+
+    }
+
+    fn lookup(node: BTreeNodeLink, keys: Vec<i32>) -> bool{
+        
+    }
