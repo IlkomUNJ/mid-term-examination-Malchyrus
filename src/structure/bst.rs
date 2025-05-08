@@ -429,8 +429,8 @@ impl BstNode {
     fn median(&self) -> BstNodeLink{
         let mut nodes = Vec::new;
         let root = BstNode::get_root(&self.get_bst_nodelink_copy());
-        inorder(&Some(root), &mut nodes);
-        let mid = nodes.len()/2;
+        BstNode::inorder(&Some(root), &mut nodes);
+        let mid = nodes.len() / 2;
         nodes[mid].clone()
 
     }
